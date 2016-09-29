@@ -1,0 +1,14 @@
+linux 设置环境变量
+sudo vim .bashrc 
+source 立即生效
+hadoop@hadoop5:~$ source .bashrc
+输出环境变量，HADOOP_HONE
+hadoop@hadoop5:~$ echo $HADOOP_HONE
+
+hadoop@hadoop5:~$ echo $HADOOP_HOME
+
+--table 将mysql表中数据全部导入 hbase
+bin/sqoop import --connect jdbc:mysql://10.141.208.45:3306/testsqoop --username hadoop --password hadoop --table student -m 1
+
+--query  query方式筛选从mysql 导入数据至hbase 
+bin/sqoop import --connect jdbc:mysql://10.141.208.45:3306/testsqoop --username hadoop --password hadoop --query 'select * from student where id>1 AND $CONDITIONS' --hbase-table testsqoop --column-family info --hbase-row-key id  -m 1 
