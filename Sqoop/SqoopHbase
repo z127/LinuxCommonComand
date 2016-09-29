@@ -1,4 +1,4 @@
-linux 设置环境变量
+1. linux 设置环境变量
 sudo vim .bashrc 
 source 立即生效
 hadoop@hadoop5:~$ source .bashrc
@@ -7,6 +7,7 @@ hadoop@hadoop5:~$ echo $HADOOP_HONE
 
 hadoop@hadoop5:~$ echo $HADOOP_HOME
 
+2. sqoop mysql to hbase
 --table 将mysql表中数据全部导入 hbase
 bin/sqoop import --connect jdbc:mysql://10.141.208.45:3306/testsqoop --username hadoop --password hadoop --table student -m 1
 
