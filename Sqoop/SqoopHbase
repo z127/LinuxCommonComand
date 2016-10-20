@@ -1,15 +1,38 @@
-1. linux 设置环境变量
+linux 设置环境变量
 sudo vim .bashrc 
 source 立即生效
 hadoop@hadoop5:~$ source .bashrc
-输出环境变量，HADOOP_HONE
+输出环境变量，
 hadoop@hadoop5:~$ echo $HADOOP_HONE
 
 hadoop@hadoop5:~$ echo $HADOOP_HOME
 
-2. sqoop mysql to hbase
---table 将mysql表中数据全部导入 hbase
-bin/sqoop import --connect jdbc:mysql://10.141.208.45:3306/testsqoop --username hadoop --password hadoop --table student -m 1
+1     将表中数据全部导入 hbase
+      bin/sqoop import --connect jdbc:mysql://10.141.208.45:3306/testsqoop --username hadoop --password hadoop --table student -m 1
 
---query  query方式筛选从mysql 导入数据至hbase 
-bin/sqoop import --connect jdbc:mysql://10.141.208.45:3306/testsqoop --username hadoop --password hadoop --query 'select * from student where id>1 AND $CONDITIONS' --hbase-table testsqoop --column-family info --hbase-row-key id  -m 1 
+2     query 方式从mysql 导入数据至hbase 
+      bin/sqoop import --connect jdbc:mysql://10.141.208.45:3306/testsqoop --username hadoop --password hadoop --table student --hbase-table testsqoop --column-family info --hbase-row-key id -m 1
+
+
+3     hive到hbase做外部连接
+      create EXTERNAL table hive_hbase_sqoopmem(key string, value1 int,value2 int)   stored by 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'  with SERDEPROPERTIES("hbase.columns.mapping"=":key,info:age,info:sex") TBLPROPERTIES("hbase.table.name" = "sqoopmem")   
+
+4     hive往hdfs导入数据	
+      insert overwrite directory '/user/hadoop/warehouse/hive_hbase_sqoopmem' select * from hive_hbase_sqoopmem stored as textfile;
+
+5     用sqoop从hive往hbae导入
+      bin/sqoop export --connect jdbc:mysql://10.141.208.45:3306/testsqoop --username hadoop --password hadoop --table student --export-dir /user/hadoop/warehouse/hive_hbase_sqoopmem/* --columns name,age,sex --fields-terminated-by '\001' --fields-terminated-by '\n' --input-null-string '\\N' --input-null-string '\\N'
+
+6     oracle到hbase问题
+      jdbc问题
+      安装完sqoop，进入客户端。
+      输入以下命令 show connector 可以清楚地看到 
+      link config 1:
+            Name: linkConfig
+            Label: Link configuration
+            Help: You must supply the information requested in order to create a link object.
+            Input 1:
+              Name: linkConfig.jdbcDriver
+              Label: JDBC Driver Class
+              Help: Enter the fully qualified class name of the JDBC driver that will be used for establishing this connection.Note: The driver jar must be in the sqoop lib directory.
+      也就是说，要将 jar包放到 sqoop/lib  文件夹下。没有的话新建一个。按理说就可以了。。。但是我还是报错大哭，大体意思就是找不到ojdbc.jar。上网找了半天，我就试着把jar包在webapps里面也放了一个。结果可以了。 路径是：sqoop/server/sqoop/webapps/web_inf/lib 
