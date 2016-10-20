@@ -24,7 +24,7 @@ hadoop@hadoop5:~$ echo $HADOOP_HOME
 5.      hive往hdfs导入数据    
         insert overwrite directory '/user/hadoop/warehouse/hive_hbase_sqoopmem' select * from hive_hbase_sqoopmem ;
 
-6.      用sqoop从hive往mysql导入
+6.      用sqoop从hdfs往mysql导入
 
         bin/sqoop export --connect jdbc:mysql://10.141.208.45:3306/testsqoop --username hadoop --password hadoop --table student --export-dir /user/hadoop/warehouse/hive_hbase_sqoopmem/* --columns name,age,sex --fields-terminated-by '\001' --fields-terminated-by '\n'
 
