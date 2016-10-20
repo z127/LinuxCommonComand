@@ -22,7 +22,7 @@ hadoop@hadoop5:~$ echo $HADOOP_HOME
         create EXTERNAL table hive_hbase_sqoopmem(key string, value1 int,value2 int)   stored by 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'  with SERDEPROPERTIES("hbase.columns.mapping"=":key,info:age,info:sex") TBLPROPERTIES("hbase.table.name" = "sqoopmem")   
 
 5.      hive往hdfs导入数据    
-        insert overwrite directory '/user/hadoop/warehouse/hive_hbase_sqoopmem' select * from hive_hbase_sqoopmem stored as textfile;
+        insert overwrite directory '/user/hadoop/warehouse/hive_hbase_sqoopmem' select * from hive_hbase_sqoopmem ;
 
 6.      用sqoop从hive往hbae导入
 
